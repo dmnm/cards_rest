@@ -16,6 +16,7 @@
 		<module>common</module>
 		<module>login</module>
 		<module>cards-rest</module>
+		<module>abc</module>
 	</modules>
 
 	<properties>

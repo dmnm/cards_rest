@@ -9,6 +9,7 @@ public class UserDetails {
 	public String firstName;
 	public String lastName;
 	public String address;
+	public String token;
 	
 	@Override
 	public String toString() {

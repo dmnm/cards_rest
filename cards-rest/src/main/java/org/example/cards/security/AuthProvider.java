@@ -21,12 +21,12 @@ public class AuthProvider implements AuthenticationProvider {
 		String username = authentication.getName();
 		String password = authentication.getCredentials().toString();
 
-		UserDetails user = loginFacade.getUserDetails(username, password);
+		UserDetails user = loginFacade.login(username, password);
 
 		if (user != null) {
 			return new UsernamePasswordAuthenticationToken(user, password, new ArrayList<>());
 		} else {
-			throw new BadCredentialsException("Username or login not found");
+			throw new BadCredentialsException("User not found");
 		}
 	}
 

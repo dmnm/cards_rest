@@ -12,9 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestResource {
 
-	@RequestMapping("/api/test")
+	@RequestMapping("/api")
 	public String[] test(Principal p, @UserId Long userId, @AuthenticationPrincipal UserDetails u) {
 		Object o = SecurityContextHolder.getContext().getAuthentication();
-		return new String[]{"Test!"};
+		return new String[]{"api! " + userId};
 	}
+	
+	@RequestMapping("/")
+    public String[] testRoot(Principal p, @UserId Long userId, @AuthenticationPrincipal UserDetails u) {
+        Object o = SecurityContextHolder.getContext().getAuthentication();
+        return new String[]{"Root " + userId};
+    }
+	
+	@RequestMapping("/auth")
+    public String[] testAuth(Principal p, @UserId Long userId, @AuthenticationPrincipal UserDetails u) {
+        Object o = SecurityContextHolder.getContext().getAuthentication();
+        return new String[]{"Auth " + userId};
+    }
 }

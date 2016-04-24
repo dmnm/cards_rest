@@ -10,18 +10,19 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class UserIdResolver implements HandlerMethodArgumentResolver {
-	@Override
-	public boolean supportsParameter(MethodParameter param) {
-		return param.hasParameterAnnotation(UserId.class) && param.getParameterType().equals(Long.class);
-	}
+    @Override
+    public boolean supportsParameter(MethodParameter param) {
+        return param.hasParameterAnnotation(UserId.class) && param.getParameterType().equals(Long.class);
+    }
 
-	@Override
-	public Object resolveArgument(MethodParameter param, ModelAndViewContainer container, NativeWebRequest request,
-			WebDataBinderFactory binder) {
-		if (supportsParameter(param)) {
-			UserDetails user = (UserDetails) ((Authentication) request.getUserPrincipal()).getPrincipal();
-			return user.id;
-		}
-		return null;
-	}
+    @Override
+    public Object resolveArgument(MethodParameter param, ModelAndViewContainer container, NativeWebRequest request,
+            WebDataBinderFactory binder) {
+        if (supportsParameter(param) && request.getUserPrincipal() instanceof Authentication
+                && ((Authentication) request.getUserPrincipal()).getPrincipal() instanceof UserDetails) {
+            UserDetails user = (UserDetails) ((Authentication) request.getUserPrincipal()).getPrincipal();
+            return user.id;
+        }
+        return null;
+    }
 }
