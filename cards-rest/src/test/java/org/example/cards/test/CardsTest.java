@@ -7,6 +7,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import org.example.cards.App;
 import org.example.cards.api.CardsResource;
+import org.example.cards.security.TokenUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,18 +46,23 @@ public class CardsTest {
 	@Autowired
 	ObjectMapper mapper;
 
+	String token = "";
+
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity())
 				.addFilters(springSecurityFilterChain).build();
+
+		MvcResult result = mockMvc.perform(get("/auth").with(httpBasic("user", "123"))).andReturn();
+		token = result.getResponse().getHeader(TokenUtils.AUTH_TOKEN_KEY);
 	}
 
 	@Test
 	public void getLoansTest() throws Exception {
 		MvcResult result = mockMvc
-				.perform(get("/api/v1/loans").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/api/v1/loans").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header(TokenUtils.AUTH_TOKEN_KEY, token))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 
@@ -66,8 +72,8 @@ public class CardsTest {
 	@Test
 	public void getDepositsTest() throws Exception {
 		MvcResult result = mockMvc
-				.perform(get("/api/v1/deposits").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/api/v1/deposits").accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header(TokenUtils.AUTH_TOKEN_KEY, token))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 
@@ -77,8 +83,8 @@ public class CardsTest {
 	@Test
 	public void getCardsTest() throws Exception {
 		MvcResult result = mockMvc
-				.perform(get("/api/v1/cards").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/api/v1/cards").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header(TokenUtils.AUTH_TOKEN_KEY, token))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 
@@ -88,8 +94,8 @@ public class CardsTest {
 	@Test
 	public void blockCardTest() throws Exception {
 		MvcResult result = mockMvc
-				.perform(put("/api/v1/cards/" + 42 + "/block").with(httpBasic("user", "123"))
-						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.perform(put("/api/v1/cards/" + 42 + "/block").accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header(TokenUtils.AUTH_TOKEN_KEY, token))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 
@@ -99,8 +105,8 @@ public class CardsTest {
 	@Test
 	public void unblockCardTest() throws Exception {
 		MvcResult result = mockMvc
-				.perform(put("/api/v1/cards/" + 42 + "/block").with(httpBasic("user", "123"))
-						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.perform(put("/api/v1/cards/" + 42 + "/block").accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header(TokenUtils.AUTH_TOKEN_KEY, token))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 
@@ -110,8 +116,8 @@ public class CardsTest {
 	@Test
 	public void blockCard404Test() throws Exception {
 		MvcResult result = mockMvc
-				.perform(put("/api/v1/cards/" + -1 + "/block").with(httpBasic("user", "123"))
-						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.perform(put("/api/v1/cards/" + -1 + "/block").accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header(TokenUtils.AUTH_TOKEN_KEY, token))
 				.andExpect(status().isNotFound()).andDo(MockMvcResultHandlers.print()).andReturn();
 
 		System.err.println("Result: 404 " + result.getResponse().getContentAsString());
