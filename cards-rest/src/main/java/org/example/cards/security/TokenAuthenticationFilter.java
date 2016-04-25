@@ -1,7 +1,7 @@
 package org.example.cards.security;
 
 import java.io.IOException;
-import java.security.Principal;
+import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,29 +10,61 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.core.Authentication;
+import org.example.cards.annotation.Simplified;
+import org.example.cards.auth.LoginFacade;
+import org.example.cards.auth.UserDetails;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-//@Component
 public class TokenAuthenticationFilter extends GenericFilterBean {
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
-        SecurityContext cxt = SecurityContextHolder.getContext();
-        //cxt.setAuthentication(authService.getAuthentication((HttpServletRequest) request));
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        
-        String header = httpRequest.getHeader(TokenUtils.AUTH_TOKEN_KEY);
-        Principal p = httpRequest.getUserPrincipal();
-        Cookie[] cookies = httpRequest.getCookies();
-        Authentication authentication =  cxt.getAuthentication();
+	private LoginFacade loginFacade;
 
-        filterChain.doFilter(request, response);
+	public TokenAuthenticationFilter(LoginFacade loginFacade) {
+		this.loginFacade = loginFacade;
+	}
 
-        //cxt.setAuthentication(null);
-    }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+			throws IOException, ServletException {
+
+		String token = getToken((HttpServletRequest) request);
+
+		SecurityContext cxt = SecurityContextHolder.getContext();
+		if (token != null && !token.trim().isEmpty()) {
+			authenticate(token, cxt);
+		}
+
+		filterChain.doFilter(request, response);
+		cxt.setAuthentication(null); // per request authentication
+	}
+
+	private String getToken(HttpServletRequest request) {
+		String header = request.getHeader(TokenUtils.AUTH_TOKEN_KEY);
+		if (header != null) {
+			return header;
+		}
+
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (TokenUtils.AUTH_TOKEN_KEY.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+
+		return null;
+	}
+
+	@Simplified
+	// this should invoke some auth provider within auth manager
+	private void authenticate(String token, SecurityContext cxt) {
+		UserDetails user = loginFacade.getUserByToken(token);
+		if (user != null) {
+			cxt.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.token, new ArrayList<>()));
+		}
+	}
 
 }

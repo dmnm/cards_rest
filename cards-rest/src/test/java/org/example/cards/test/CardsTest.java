@@ -5,12 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-/*import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.Matchers.containsInAnyOrder;*/
-import static org.hamcrest.Matchers.is;
-
 import org.example.cards.App;
 import org.example.cards.api.CardsResource;
 import org.junit.Before;
@@ -37,89 +31,89 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ContextConfiguration(classes = App.class, loader = SpringApplicationContextLoader.class)
 @WebAppConfiguration
 public class CardsTest {
-    @Autowired
-    WebApplicationContext context;
+	@Autowired
+	WebApplicationContext context;
 
-    @Autowired
-    FilterChainProxy springSecurityFilterChain;
+	@Autowired
+	FilterChainProxy springSecurityFilterChain;
 
-    MockMvc mockMvc;
+	MockMvc mockMvc;
 
-    @Autowired
-    CardsResource cardsResource;
+	@Autowired
+	CardsResource cardsResource;
 
-    @Autowired
-    ObjectMapper mapper;
+	@Autowired
+	ObjectMapper mapper;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity())
-                .addFilters(springSecurityFilterChain).build();
-    }
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity())
+				.addFilters(springSecurityFilterChain).build();
+	}
 
-    @Test
-    public void getLoansTest() throws Exception {
-        MvcResult result = mockMvc
-                .perform(get("/api/v1/loans").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
+	@Test
+	public void getLoansTest() throws Exception {
+		MvcResult result = mockMvc
+				.perform(get("/api/v1/loans").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andDo(MockMvcResultHandlers.print()).andReturn();
 
-        System.err.println(result.getResponse().getContentAsString());
-    }
+		System.err.println(result.getResponse().getContentAsString());
+	}
 
-    @Test
-    public void getDepositsTest() throws Exception {
-        MvcResult result = mockMvc
-                .perform(get("/api/v1/deposits").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
+	@Test
+	public void getDepositsTest() throws Exception {
+		MvcResult result = mockMvc
+				.perform(get("/api/v1/deposits").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andDo(MockMvcResultHandlers.print()).andReturn();
 
-        System.err.println(result.getResponse().getContentAsString());
-    }
+		System.err.println(result.getResponse().getContentAsString());
+	}
 
-    @Test
-    public void getCardsTest() throws Exception {
-        MvcResult result = mockMvc
-                .perform(get("/api/v1/cards").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
+	@Test
+	public void getCardsTest() throws Exception {
+		MvcResult result = mockMvc
+				.perform(get("/api/v1/cards").with(httpBasic("user", "123")).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andDo(MockMvcResultHandlers.print()).andReturn();
 
-        System.err.println(result.getResponse().getContentAsString());
-    }
+		System.err.println(result.getResponse().getContentAsString());
+	}
 
-    @Test
-    public void blockCardTest() throws Exception {
-        MvcResult result = mockMvc
-                .perform(put("/api/v1/cards/" + 42 + "/block").with(httpBasic("user", "123"))
-                        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
+	@Test
+	public void blockCardTest() throws Exception {
+		MvcResult result = mockMvc
+				.perform(put("/api/v1/cards/" + 42 + "/block").with(httpBasic("user", "123"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andDo(MockMvcResultHandlers.print()).andReturn();
 
-        System.err.println(result.getResponse().getContentAsString());
-    }
+		System.err.println(result.getResponse().getContentAsString());
+	}
 
-    @Test
-    public void unblockCardTest() throws Exception {
-        MvcResult result = mockMvc
-                .perform(put("/api/v1/cards/" + 42 + "/block").with(httpBasic("user", "123"))
-                        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andDo(MockMvcResultHandlers.print()).andReturn();
+	@Test
+	public void unblockCardTest() throws Exception {
+		MvcResult result = mockMvc
+				.perform(put("/api/v1/cards/" + 42 + "/block").with(httpBasic("user", "123"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andDo(MockMvcResultHandlers.print()).andReturn();
 
-        System.err.println(result.getResponse().getContentAsString());
-    }
+		System.err.println(result.getResponse().getContentAsString());
+	}
 
-    @Test
-    public void blockCard404Test() throws Exception {
-        MvcResult result = mockMvc
-                .perform(put("/api/v1/cards/" + -1 + "/block").with(httpBasic("user", "123"))
-                        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound()).andDo(MockMvcResultHandlers.print()).andReturn();
+	@Test
+	public void blockCard404Test() throws Exception {
+		MvcResult result = mockMvc
+				.perform(put("/api/v1/cards/" + -1 + "/block").with(httpBasic("user", "123"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()).andDo(MockMvcResultHandlers.print()).andReturn();
 
-        System.err.println("Result: 404 " + result.getResponse().getContentAsString());
-    }
+		System.err.println("Result: 404 " + result.getResponse().getContentAsString());
+	}
 }
