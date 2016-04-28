@@ -23,3 +23,8 @@ The you can invoke some requests:
 `login` - module for authorization module, contains mock implementstion of LoginFacade  
 `abc` - (have no idea how it should be named)) module for bank operation, contains mock implementstion of Loan, Deposit and Card Facades  
 `cards-rest` - main module: rest, security and so on
+
+
+#### Links
+Custom 'Remember me' authentication with token -  
+http://automateddeveloper.blogspot.ru/2014/03/securing-your-mobile-api-spring-security.html
